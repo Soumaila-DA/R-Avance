@@ -1,0 +1,730 @@
+---
+title: "Université de Lille - M2 Sociologie - Parcours ENSP"
+author: "Soukaina ABI-AYAD- Soumaila DA"
+date: "data de rendu:12/01/2022"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '3'
+  unilur::tutorial_html_solution:
+    df_print: paged
+    highlight: tango
+    number_sections: no
+    toc: yes
+    toc_depth: '3'
+    toc_float: yes
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+subtitle: Le télétravail pendant le confinement, et son impact sur la santé
+---
+
+
+<style> body {text-align: justify} </style> <!-- Justify text. -->
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+
+knitr::opts_template$set(alert = list(box.title = "Watch out!",
+                                      box.body = list(fill = "#ffe0d9", colour = "black"),
+                                      box.header = list(fill = "#FFAD99", colour = "black"),
+                                      box.collapse = NULL,
+                                      box.icon = "fa-exclamation-triangle"))
+knitr::opts_template$set(solution = list(box.title = "Solution",
+                                         box.body = list(fill = "#e6f6e7", colour = "black"),
+                                         box.header = list(fill = "#ace1af", colour = "black"),
+                                         box.icon = "fa-check",
+                                         box.collapse = TRUE))
+knitr::opts_template$set(information = list(box.title = "Information",
+                                            box.body = list(fill = "#bbe8f4", colour = "black"),
+                                            box.header = list(fill = "#64c9e6", colour = "black"),
+                                            box.icon = "fa-info-circle",
+                                            box.collapse = NULL))
+knitr::opts_template$set(clues = list(box.title = "Indices",
+                                      box.body = list(fill = "#fff9dc", colour = "black"),
+                                      box.header = list(fill = "#ffec8b", colour = "black"),
+                                      box.icon = "fa-search",
+                                      box.collapse = TRUE))
+```
+
+
+### <font color="chocolate">Introduction</font color>
+
+La crise sanitaire a bouleversé le mode de vie des Français,  non seulement en matière de l’état de santé, mais aussi au niveau du travail, la diffusion et le nombre de décès liés à la Covid-19 en France à partir de la fin du mois de février 2020 ont nécessité d’instaurer les mesures de confinement pour lutter contre la propagation du Covid19.
+Par ailleurs,  plusieurs entreprises ont adopté le télétravail comme une forme de travail à distance ou à domicile, considéré comme une nécessité pendant la période de confinement pour assurer la continuité du travail tout en protégeant les travailleurs contre la contamination rapide du virus. Néanmoins, cette nouvelle organisation de travail s’est imposée sans aucune prise de mesures au préalable.
+D’un point de vue sociologique et scientifique, l’instauration du télétravail, auraient des effets positifs sur la productivité, en améliorant les conditions de travail et de la qualité de vie au travail, aussi en limitant les déplacements qui semblent bénéfiques pour la santé physique(1) mais pas seulement, permettent de diminuer aussi l’absentéisme(2), sauf que le fait de travailler chez soi conduit à la perturbation de la vie privée et l’absence de connexion entre la vie professionnelle et la vie privée, par conséquent, cela peut entraîner une charge mentale difficile à surmonter(3). Une étude portant sur l’intensité du télétravail montre que les effets de télétravail suivent une relation en U inversé, dans le sens où une pratique modérée du télétravail est bonne pour la santé au contraire d’un télétravail intense à des effets négatifs pour la santé(4).
+Dans ce contexte, il est nécessaire d’évaluer les déterminants socio-économiques et socio-démographiques de la population qui est déjà en emploi et qui a adopté le télétravail. L’idée de cette étude est de présenter une analyse de l’impact de télétravail sur la santé psychologique « stress », et d’identifier les déterminants qui favorisent le télétravail.  Pour ce faire, nous réalisons des modèles économétriques utilisant les données de coco 2020,  à l’aide d’une régression logistique pour détecter les liens entre les différents facteurs. 
+
+
+
+
+### <font color="chocolate">Objectif de l’étude</font color>
+ 
+La présente étude vise à identifier le lien entre le télétravail et les caractéristiques individuelles des ménages, plus précisément, on cherche à répondre aux questions suivantes : quels sont les facteurs et les déterminants de télétravail ? À voir aussi les différents effets engendrés par le télétravail sur la santé psychologique en période de confinement ? Le niveau de stress déclaré par les enquêtés est-il lié au télétravail ? Le télétravail contribue-t-il à la division genrée au travail ? 
+
+ 
+
+### <font color="chocolate">Les hypothèses </font color>
+ 
+ - H1 : des heures intenses de télétravail augmentent le risque d’avoir des troubles du sommeil, ces troubles sont liés à plusieurs facteurs, comme la diminution des heures de sommeil à cause d’une importante charge de travail, exposition aux écrans de l’ordinateur. En conséquence, cela présente un risque pour la santé 
+ - H2 : Le télétravail peut augmenter le stress, le faite de rester chez soi isoler engendre le sentiment de solitude, et par conséquent le stress.
+ - H3 : Le comportement des individus vis-à-vis du télétravail diffère selon la catégorie socio-professionnelle.
+ - H4 : les femmes sont plus susceptibles de vivre le télétravail difficilement (augmentation de la charge de travail, entre travail de maison et travail de l’entreprise).
+ - H5 : la diminution d’une activité physique lors du confinement peut augmenter le risque d’avoir des troubles de santé.
+ 
+
+ 
+### <font color="chocolate">Méthodologie et source des données</font color>
+
+
+Dans le cadre de cette étude, nous allons utiliser les données issues de l’enquête « faire face au Covid-19 » réalisée en 2020, qui a pour but de mesurer l’expérience sociale du confinement en France, en s’appuyant sur un dispositif empirique pré-existant-ELIPSS. Ces données regroupent les variables qui mesurent les changements dans les pratiques sociales concrètes (vie familiale, travail, relations sociales, éducation, loisirs..), et capturent l’expérience subjective ainsi que les attitudes des répondants pendant le confinement.  Nous utilisons des données d’open data [coco1](https://cdsp.sciences-po.fr/fr/ressources-en-ligne/ressource/fr.cdsp.ddi.elipss.202004.coco1/) ainsi que les données spatiales [SPF](https://cdsp.sciences-po.fr/fr/projets/panel-elipss/) qui proviennent de data.gouv.fr et de site de santé publique France,  permettant de suivre les indicateurs de la pandémie en France.
+
+
+
+**Populationn de l'étude**
+
+
+- Pour mieux étudier la variable de télétravail, nous n'allons prendre que la population qui est en emploi pendant le confinement. Les variables indépendantes utilisées sont des variables pour décrire les caractéristiques des télétravailleurs.  Afin de mieux décrire les caractéristiques des télétravailleurs, les variables choisies sont des variables démographiques qui regroupent (âge, sexe, présence d’enfants), socio-économique (catégorie socioprofessionnelle), et caractéristique du ménage (type de logement,  information sur l’employé (temps consacré pour dormir).
+
+
+**Dictionnaire des variables**
+
+1. Q30:	Nombre de personnes utilisent internet pour le travail
+2. Q31: Bonne connexion Internet pendant la période de confinement 
+3. Q37	Situation professionnelle actuelle pendant le confinement "Sitpro.con"
+4. eayy_PCS6 : Groupe socioprofessionnel en 6 postes " Pcs"
+5. Q38: Situation actuelle vis-à-vis le télétravail "Tel.conf"
+7. Q21: Sentiment de solitude "Solitude"
+8. eayy_A1  : Sexe
+9. Age_quiq : Age quinquennal (eayy_A2A_rec)
+10. Q59_6 : Temps consacré à dormir (eayy_B18_rec)
+11. Q26 : Taille de logement (T-loge)
+12. q41_1 : Risque pour la santé 
+
+
+
+#### <font color="chocolate">Analyse de la variable télétravail en fonction des déterminants</font color> 
+
+**Application sur R : Data management**
+ 
+```{r eval=T, message=F, warning=F}
+# téléchargement des packages 
+
+library(tidyverse)
+library(questionr)
+library(ggplot2)
+library(viridisLite)
+library(survey)
+library(cowplot)
+library(srvyr)
+library(sf)
+library(gtsummary)
+```
+ 
+
+**Importation des données**
+ 
+```{r, solution = T, box.title = "Importation des données coco"}
+
+# Importation des données coco1
+coco <- read.csv("C:/Users/dasou/Desktop/Cours M1 ENSP/M2/R Avance/Examen R Avancee/fr.cdsp.ddi.elipss.202004coco1.csv",
+                 stringsAsFactors = F)
+
+# Importation du résultat des tests SPF
+tests_dep <- read.csv2("C:/Users/dasou/Desktop/Cours M1 ENSP/M2/R Avance/carto/carto/spf/sp-pos-heb-dep-2021-11-29-19h06.csv",
+                       stringsAsFactors = F,fileEncoding = "utf-8")
+
+# Importation du fond des départements
+dep_sf <- st_read("C:/Users/dasou/Desktop/Cours M1 ENSP/M2/R Avance/carto/carto/shapefile/departements-20140306-50m.shp",stringsAsFactors = F)
+
+```
+ 
+ **Préparation des données**
+   
+Avant de commencer l'analyse, nous allons d'abord préparer nos données, en recordant certaines variables et en regroupant d'autres.
+ 
+```{r}
+# retirer les préfixes coco1_ 
+
+names(coco) <- gsub("coco1_","",names(coco))
+
+```
+
+
+
+- Puisque nous allons nous intéresser à la population qui exerce le télétravail, alors ce qui est nécessaire dans ce cas, c'est de prendre que la population qui est en emploi, donc nous allons à l'aide de la fonction "filtre", créer cocow une seconde base de données qui est propre pour la population spécifique pour la population en emploi.
+
+ 
+```{r}
+
+# filtrer la population : population qui est en emploi pendant le confinement 
+
+coco$sitpro.conf <- fct_collapse(factor(coco$q37),
+                                        "En congé"=c("1","2","3"),
+                                        "Au chômage"=c("4","5"),
+                                        "En emploi"=c("6"),
+                                 NULL=c("7","6666","9999"))
+cocow <- coco %>% 
+  filter(coco$sitpro.conf =="En emploi" )
+
+
+dim(cocow) # Nombre d'observations et de varibles
+
+
+```
+ 
+ 
+ **Le recordage des variables**
+ 
+- Avant d’estimer le modèle, nous allons présenter des statistiques descriptives des variables indépendantes et de variable dépendante.
+ 
+ 
+- Afin de faciliter la lecture des variables par la suite de l'étude, nous allons recorder les variables présentes en fonction des modalités présentent dans le questionnaire.
+- Tout d'abord, nous allons recorder la variable eayy_a1 qui représente le sexe, initialement cette variable est recordée en 1 et 2, donc nous allons attribuer la modalité "Homme" pour 1 et "Femme" pour 2.
+ 
+ 
+```{r}
+# recodage des variables 
+
+cocow$sexe <- fct_recode(factor(cocow$eayy_A1), "Homme" = "1", "Femme" = "2")
+
+freq(cocow$sexe)
+
+```
+ 
+ 
+ 
+```{r}
+
+# Répartition selon l'âge du répondant
+
+cocow$age_quinq <- fct_recode(factor(cocow$eayy_A2A_rec),
+                             "<24 ans"="4", "25-29 ans"="5",
+                             "30-34 ans"="6", "35-39 ans"="7",
+                             "40-44 ans"="8", "45-49 ans"="9",
+                             "50-54 ans"="10", "55-59 ans"="11",
+                             "60-64 ans"="12","65-69 ans"="13",
+                             "70 ans et+"="14")
+freq(cocow$age_quinq)
+
+```
+
+
+```{r}
+# fréquence de télétrvail avant le 15 mars 
+
+cocow$tvw_av <- case_when(cocow$q36 == 1 | cocow$q36 == 2 ~ "Touj.Souvent",
+                         cocow$q36 == 3 | cocow$q36 == 4 ~ "parfois.rarement",
+                         cocow$q36 > 4 ~ "Jamais")
+
+
+```
+
+
+**Tableau1: les risques pour la santé**
+
+
+```{r}
+cocow$risque.sante <- fct_recode(factor(cocow$q41_1),
+                              "Oui"="1","Non"="2",NULL = "6666")
+freq(cocow$risque.sante)
+```
+
+```{r}
+ # recodage de la variable situation actuelle vis-à-vis le télétravail ( pendant le confinement)
+
+cocow$tele.conf <- fct_recode(factor(cocow$q38),
+                                 "Lieu habituel"="1",
+                                 "Lieu habituel/TT"="2",
+                                 "Télétravail"="3", 
+                                  NULL = "6666")
+```
+ 
+ **Figure1: Risuqe de santé selon le travail**
+
+```{r}
+
+cocow %>% 
+  filter(is.na(risque.sante)==F) %>% 
+ggplot()+
+  aes(fill=risque.sante, x=tele.conf)+
+  geom_bar(position="fill")
+
+```
+
+- Par la suite, les variables recodées ci-dessous vont nous en servir pour les estimations 
+
+**Tableau 2: fréquences pour la variable télétravail**
+
+
+```{r,echo=F, message=F, error=F, warning=F}
+# recodage de nouveau la variable en 2 modalités
+
+cocow$teleconf <-fct_collapse(factor(cocow$tele.conf),
+                               "OUI"= c("Télétravail","Lieu habituel/TT"),
+                               "NON"= c("Lieu habituel","NC"))
+
+cocow$tele.conf  <- fct_explicit_na(cocow$tele.conf,"NC") #gestion des NA 
+
+```
+
+
+**Lecture :**
+
+- près de 45 % des enquêtés déclarent d’être en télétravail, et 39.3 % exercent le travail habituel contre 7.7%  pour ceux qui alternent entre le travail habituel et le télétravail.
+Pour voir l’effet de télétravail sur le genre, en la croisant avec la variable sociodémographique sexe, les résultats sont affichés sous forme de la figure suivante :
+
+
+```{r}
+# raisons pour se rendre au travail 
+
+cocow$Rtele <- fct_collapse(factor(cocow$q40),
+                              "pas compatible au TT" ="1",
+                               "pas permis par l'employeur" ="2",
+                                 "autres raisons"="3",
+                                  NULL=c("6666","9999"))
+
+cocow$Rtele  <- fct_explicit_na(cocow$Rtele,"NC") #gestion des NA
+
+```
+
+
+
+```{r}
+
+#taille de logement q26 
+
+cocow$T_loge <- fct_collapse(factor(cocow$q26),
+                               "<20 m²" ="1",
+                                "de 20-39 m²" ="2",
+                                 "de 40-59m²"="3",
+                                  "de 60-79 m²"="4",
+                                  "de 80-100 m²" ="5",
+                                  "plus 100 m²" ="6",
+                                   NULL ="9999")
+
+cocow$T_loge <- fct_explicit_na(cocow$T_loge,"NC") 
+
+```
+ 
+ 
+ 
+```{r}
+
+cocow$enfants <- fct_collapse(factor(cocow$eayy_C8),
+                              "oui"="1",
+                               "non" ="2",
+                                NULL= "9996")
+
+
+```
+
+
+
+```{r,echo=F, message=F, error=F, warning=F}
+
+# Les déterminents de stress
+
+# Q21: Sentiment de solitude
+
+# q64: Stress lié au confinement
+
+
+cocow$stress <- fct_collapse(factor(cocow$q64),
+                             "Moins de stressé"= c("0","1","2","3","4","5"),
+                              "Stressé" = c("6","7","8","9","10") ,NULL= c("9999"))
+freq(cocow$stress)
+
+cocow$stress  <- fct_explicit_na(cocow$stress,"NC") #gestion des NA 
+
+
+cocow$solitude <- fct_collapse(factor(cocow$q21),
+                               "Trés seul(e)" ="1",
+                                "Plutôt seul(e)" ="2",
+                                 "plutôt entouré(e)"= "3",
+                                 "Trés entouré(e)"="4")
+cocow$solitude <- fct_explicit_na(cocow$solitude,"NC") 
+
+# Q63: Conditions lors du confinement
+
+cocow$cvie <- fct_collapse(factor(cocow$q63),
+                           "Plus difficile que la plupart" ="1",
+                            "Proches que celles de la plupart"="2",
+                             "Meilleures " ="3",
+                             NULL ="9999")
+cocow$cvie <- fct_explicit_na(cocow$cvie,"NC") 
+
+
+ # eayy_K3: Fréquence activité sportive 30 minutes d'affilée
+
+cocow$acti_spor <- fct_collapse(factor(cocow$eayy_K3),
+                                 "Tous les jours" ="1",
+                                 "Plusieurs fois/sem"="2",
+                                "une fois/sem"="3",
+                                 "une-3 fois/mois"="4",
+                                 "Moins souvent"="5",
+                                  NULL= "9")
+
+cocow$acti_spor <- fct_explicit_na(cocow$acti_spor,"NC") 
+
+
+# temps consacré a dormir
+
+cocow$T_dormir <- fct_collapse(factor(cocow$q59_6),
+                            "entre 0h-4h" = c("1","2","3","4","5"),
+                             "entre 4h-6h" ="6",
+                             "entre 6h-8h" ="7",
+                              "entre 8h-10h" ="8",
+                               "plus de 10h" ="9",
+                               NULL= "9999")
+cocow$T_dormir  <- fct_explicit_na(cocow$T_dormir,"NC") 
+freq(cocow$T_dormir)
+
+```
+
+
+
+### <font color="chocolate">Evolution de télétravail avant le 15 mars et pendant le confinement </font color>
+
+
+```{r,echo=F, message=F, error=F, warning=F}
+tele_av <- rprop(table(emploi=cocow$sitpro.conf, teletravail = cocow$tvw_av ))
+tele_av
+
+tele_conf <- rprop(table(emploi=cocow$sitpro.conf, teletravail = cocow$tele.conf))
+tele_conf
+```
+
+
+```{r,echo=F, message=F, error=F, warning=F}
+library(cowplot)
+# Fréquence du télétravail avant le 15 mars
+av <- tele_av%>% 
+  data.frame() %>% 
+  filter(teletravail != "Total") %>%
+  filter(emploi == "En emploi") %>%
+  ggplot()+
+  aes(fill= emploi, x=teletravail, y= Freq) %>% 
+  geom_bar(col="blue", stat="identity", position="dodge")+
+  labs(title=" Avant le 15 mars",
+       x="Fréquence de télétravail",y="%",
+       caption = "Champ : Personnes en emploi pendant le confinement\nSource : Coco1 - ELIPSS, CDSP, avril 2020")+
+  viridis::scale_fill_viridis(discrete=T, option= "C")+
+  theme_bw()
+
+# Situation actuelle vis-à-vis du télétravail
+ap <- tele_conf%>% 
+  data.frame() %>% 
+  filter(teletravail != "Total") %>%
+  filter(emploi == "En emploi") %>%
+  ggplot()+
+  aes(fill= emploi, x=teletravail, y= Freq) %>% 
+  geom_bar(col="blue", stat="identity", position="dodge")+
+  labs(title="Pendant le confinement",
+       x="Fréquence de télétravail",y="%",
+       caption = "Champ : Personnes en emploi pendant le confinement\nSource : Coco1 - ELIPSS, CDSP, avril 2020")+
+  viridis::scale_fill_viridis(discrete=T, option= "C")+
+  theme_bw()
+
+plot_grid(av, ap)
+```
+
+**Interprétation**
+
+ - Avant le confinement, plus de la moitié (57.1%) de notre population d’étude n’avait jamais pratiqué de télétravail. Pendant le confinement, plus de la moitié de cette même population (52.8%) pratique soit de façon partielle le télétravail (7.7%) soit principalement le télétravail (45.1%).
+
+
+
+**Tableau3: Répartition selon le Groupe socioprofessionnel**
+
+```{r}
+
+cocow$pcs <- fct_collapse(factor(cocow$q35),
+                         "Agriculteurs"="1",
+                         "Artisans, comm., chef d'E"="2",
+                         "Cadres et pr.intell.sup."="3",
+                         "Prof. intermédiaires"="5",
+                         "Employés"="4","Ouvriers"="6",
+                         NULL = c("9999","7"))
+freq(cocow$pcs)
+```
+
+
+####<font color="chocolate"> La pondération</font color>
+
+Afin de mieux estimé les déterminants du télétravail et ses conséquences sur la santé de la population française en emploi lors du confinement nous allons appliquer une pondération sur les données coco1 avant de faire nos analyses bi-variées et multivariées.
+
+
+```{r,echo=F, message=F, error=F, warning=F}
+# Pondération des données ----
+coco1 <- svydesign(
+                   data = cocow,
+                   weights = ~ cocow$POIDS, # ou coco$coco1_POIDS
+                   ids = ~1
+                   )
+
+```
+
+
+### <font color="chocolate">Quelle est la part des femmes et Hommes qui exercent le télétravail pendant le confinement</font color>
+
+- Pour voir l’effet de télétravail sur le genre, en la croisant avec la variable sociodémographique sexe, les résultats sont affichés sous forme de la figure suivante :
+
+**Figure2: fréquence de télétravail selon le genre**
+
+```{r}
+ #Distribution de la situation de télétravail selon le genre
+
+tele_conf_genre <- rprop(svytable(~ sexe + tele.conf, coco1),total=F) %>% 
+  data.frame() %>% 
+  group_by(sexe)
+tele_conf_genre
+
+tele_conf_genre %>% 
+  ggplot()+
+  aes(fill=sexe, x=tele.conf, y= Freq) %>% 
+  geom_bar(col="black",stat="identity", position="dodge")+
+  labs(title="Fréquence de télétravail selon le genre",
+       x="Fréquence de télétravail",y="%", fill= "Sexe",
+       caption = "Champ : Personnes en emploi\nSource : Coco1 - ELIPSS, CDSP, avril 2020")+
+  viridis::scale_fill_viridis(discrete=T, option= "C")+
+  theme_bw()
+
+```
+
+**Interprétation:**
+
+- Parmi la population qui est en emploi, on trouve que 50.7 % des hommes adoptent le télétravail contre 47.7%, pour ce qui concerne la modalité lieu habituel, on a 43.1% des femmes qui exercent leur travail en lieu habituel vs 42.1% pour les hommes. Pour le travail alterné entre habituel et télétravail, on a un pourcentage de 9.2 pour les femmes contre 8.4 % pour les hommes.
+
+En résumé, on peut dire que les femmes en emploi ont pratiqué moins le télétravail durant le confinement que les hommes. 
+
+
+
+**Figure3: le télétravail en fonction de tranches d’âge** 
+
+
+```{r}
+tele_conf_age <- rprop(svytable(~ age_quinq + tele.conf, coco1),total=F) %>% 
+  data.frame() %>% 
+  group_by(age_quinq)
+tele_conf_age
+
+tele_conf_age %>% 
+  ggplot()+
+  aes(fill=age_quinq, x=tele.conf, y= Freq) %>% 
+  geom_bar(col="black",stat="identity", position="dodge")+
+  labs(title="Fréquence de télétravail selon les tranches d'âge",
+       x="Fréquence de télétravail",y="%", fill= "Age",
+       caption = "Champ : Personnes en emploi\nSource : Coco1 - ELIPSS, CDSP, avril 2020")+
+  viridis::scale_fill_viridis(discrete=T, option= "C")+
+  theme_bw()
+```
+
+**Lecture :**
+
+On note une pratique du télétravail assez importante dans l'ensemble surtout au niveau des plus jeunes et des plus âgés où le taux dépasse 50%.
+
+
+
+
+
+**Figure4: Le télétravail en fonction de la catégorie socioprofessionnelle **
+
+
+
+```{r}
+
+tele_conf_csp <- rprop(svytable(~ pcs + tele.conf, coco1),total=F) %>% 
+  data.frame() %>% 
+  group_by(pcs)
+tele_conf_csp
+
+tele_conf_csp %>% 
+  ggplot()+
+  aes(fill=pcs, x=tele.conf, y= Freq) %>% 
+  geom_bar(col="black",stat="identity", position="dodge")+
+  labs(title="Fréquence de télétravail selon la CSP",
+       x="Fréquence de télétravail",y="%", fill= "CSP",
+       caption = "Champ : Personnes en emploi\nSource : Coco1 - ELIPSS, CDSP, avril 2020")+
+  viridis::scale_fill_viridis(discrete=T, option= "C")+
+  theme_bw()
+
+```
+
+**Lecture :**
+
+- Les ouvriers et les agriculteurs sont les catégories socioprofessionnelles qui ont le moins pratiqué le télétravail durant le confinement. En effet, la quasi-totalité des ouvriers et des agriculteurs (respectivement 94.3%, 93.3%) déclarent n'avoir jamais pratiqué le télétravail durant le confinement. 
+
+A l’inverse, chez les cadres et professions intellectuelles supérieures 74.5% ont été principalement en télétravail durant le confinement. (H3 vérifiée).
+
+
+
+### <font color="chocolate">Préparation pour les estimations</font color> 
+
+### <font color="chocolate">Première estimation : les déterminants de télétravail</font color> 
+ 
+ **Etude des facteurs qui favorisent l'individu a dopté le télétrvail**
+ 
+
+- Nous allons étudier la relation entre les caractéristiques socioéconomiques et démographiques avec le télétravail, en présentant une description des caractéristiques de l'échantillon qui est constitué de la population en emploi.
+
+Les variables sont sélectionnées sur la base de plusieurs études qui étaient faites.
+
+La variable dépendante est le télétravail pendant le confinement, qui prend deux modalités ( faire du télétravail)/ ne pas faire de télétravail.
+
+
+**Analyse statistique**
+
+**Figure 5 : Test statistique et test de khi-deux**
+
+```{r}
+chisq.test(rprop(svytable(~ sexe + teleconf, coco1),total=F))
+chisq.test(rprop(svytable(~ Rtele + teleconf, coco1),total=F))
+chisq.test(rprop(svytable(~ age_quinq + teleconf, coco1),total=F))
+chisq.test(rprop(svytable(~ risque.sante + teleconf, coco1),total=F))
+chisq.test(rprop(svytable(~ enfants + teleconf, coco1),total=F))
+chisq.test(rprop(svytable(~ q31 + teleconf, coco1),total=F))
+chisq.test(rprop(svytable(~ T_loge + teleconf, coco1),total=F))
+chisq.test(rprop(svytable(~ pcs + teleconf, coco1),total=F))
+```
+
+**Interprétation**
+
+Le test de Khi-deux, étudie le lien entre la variable dépendante (teleconf) et les variables explicatives, dans notre cas, le test de khi-deux montre que le sexe et l'âge, bonne connexion en internet (q31), raisons pour se rendre au travail (Retele), et catégorie socioprofessionnelle,  sont respectivement significatifs avec une p-value suffisamment inférieur à 0.05, ce qui permet de confirmer l’existence d’une association entre les variables.
+Par contre pour la variable risque de santé et avoir d’enfants, le test n’est pas vraiment significatif avec une p-value supérieure à 0.05 (pas d’association entre les variables).
+
+Un premier bilan de la relation entre nos variables explicatives et notre variable dépendante, nous donne à voir que la variable bonne connexion, risque pour la santé, taille de logement, raison pour le travail, jouent un rôle certain dans le choix des enquêtés à adopter le télétravail. 
+Cependant, ces résultats ne donnent rien sur là où les modalités des variables explicatives qui ont un vrai effet sur la variable dépendante.
+
+
+**Résultats de l’estimation logistique pour les déterminants de télétravail**
+
+```{r,echo=F, message=F, error=F, warning=F}
+summary(svyglm(teleconf ~  q31 +q30+ sexe + pcs+ enfants + age_quinq+ Rtele + risque.sante + T_loge, design = coco1,  family = binomial(logit)))
+
+```
+
+
+**Interprétation**
+
+- La valeur de l’intercept est estimée à -1.818e+01, associée à une valeur petite  de la p_value, alors l’impact de l’intercept est pertinent (le test de nullité de la constante est significatif).
+
+- L’âge semble positivement corrélé, une augmentation de l’âge est associée en moyenne sur le fait  de favoriser le télétravail par l’enquêté. (la p-value est petite => la variable est significative).
+
+- Pour la modalité « ouvrier » de la variable csp, semble corrélé négativement avec la variable d’intérêt, par contre pour les cadres sont plus favorables à adopter le télétravail que les autres catégories socioprofessionnelles.
+
+- La variable sexe= femme, semble ne pas être  significatif  avec une p-value estimée légèrement supérieure à 0.05
+D’une manière générale, les modalités avec des valeurs négatives que le paramètre estimaté, indiquent des orientations opposées à l’évolution des  modalités renseignant par rapport à la probabilité d’être en télétravail.
+
+
+### <font color="chocolate">Deuxième estimation: l'effet de télétravail sur la santé (facteur de stress)</font color> 
+
+**Test statistique et test de khi-deux pour le modèle (2)**
+
+
+```{r,echo=F, message=F, error=F, warning=F}
+# test statistique pour la variable stress
+
+chisq.test(rprop(svytable(~ sexe + stress, coco1),total=F))
+
+chisq.test(rprop(svytable(~ tele.conf+ stress, coco1),total=F))
+
+chisq.test(rprop(svytable(~ cvie+ stress, coco1),total=F))
+
+chisq.test(rprop(svytable(~ acti_spor+ stress, coco1),total=F))
+
+chisq.test(rprop(svytable(~ T_dormir + stress, coco1),total=F))
+
+
+```
+
+**Résultats de l’estimation logistique pour l’effet de télétravail sur le stress**
+
+```{r}
+summary(svyglm(stress ~  sexe + cvie + T_dormir+ acti_spor+ teleconf , design = coco1,  family = binomial(logit)))
+
+```
+
+D’une façon générale, on remarque que le modèle n’est pas vraiment significatif, cela peut être justifié par le fait que les variables choisies ne sont pas les bonnes pour déterminer le facteur de stress déclaré par les enquêtés, aussi on trouve que le stress n’est pas vraiment lié au télétravail dans le cas de cette enquête. 
+
+
+### <font color="chocolate">Conclusion</font color> 
+
+Nos résultats montrent que le télétravail peut être associé à des différents facteurs liés non seulement aux caractéristiques individuelles de la personne mais aussi aux caractéristiques sociodémographiques et socio-économiques.
+Malgré le faible lien de causalité entre le télétravail et le stress, sauf que cela ne fausse pas l’hypothèse de l’effet de télétravail sur la santé, en effet cela dépend de la population de l’étude et de la période de l’étude. Dans le cas de cette enquête le stress déclaré par les enquêtés était plus lié au fait du confinement que le fait de télétravail.
+
+
+
+### <font color="chocolate">Partie II : Cartographie</font color> 
+
+
+Dans cette partie, nous allons essayer de présenter une cartographie de taux d’incidence du Covid-19, par département.
+
+Pour bien projetr l’ensemble des départements français, nous allons travailler sur le logiciel R, en utilisant le package « sf » pour les données spatiales. 
+Les données utilisées ce sont des données des tests  virologiques par département issues du site [data.gouv.fr] (https://www.data.gouv.fr/fr/datasets/contours-des-departements-francais-issus-d-openstreetmap/) , ainsi que les données Shape file des départements français :
+(https://www.data.gouv.fr/fr/datasets/donnees-relatives-aux-resultats-des-tests-virologiques-covid-19/)
+
+
+```{r}
+# Calcul du taux d'incidence par departement
+
+# Transformer la colonne pop en numérique
+tests_dep$pop <- sapply(tests_dep$pop,as.numeric)
+
+# Calcul
+incid_dep <- tests_dep %>%
+  filter(week == "2021-S46" | week == "2021-S45" | week == "2021-S44" | week == "2021-S43" | week == "2021-S42" | week == "2021-S41" | week == "2021-S40" | week == "2021-S39" | week == "2021-S38" | week == "2021-S37" | week == "2021-S36" | week == "2021-S35") %>%
+  group_by(dep) %>% 
+  summarise(P = sum(P), PO = sum(pop)) %>% 
+  mutate(incid = round(100000*P/PO,0))
+
+```
+
+```{r, echo=FALSE}
+# Changer de CRS
+dep_sf <- st_transform(dep_sf,crs=2154) # projection Lambert-93
+
+# Les objets sf peuvent être mis en forme à l'aide des fonctions tidyverse
+dep_metro_sf <- dep_sf %>% 
+  filter(substr(code_insee,1,2) != "97")
+
+# Ajout de l’indicateur incidence au fichier sf des départements
+dep_metro_sf <- left_join(dep_metro_sf,
+                          incid_dep,
+                          by= c("code_insee"="dep"))
+```
+
+```{r}
+# Carte des d'incidence par département
+ggplot(dep_metro_sf)+
+  aes(fill=incid)+
+  geom_sf(color="snow4",size=.2)+
+  theme_bw()+
+  viridis::scale_fill_viridis()+
+  coord_sf( datum = NA)+
+  labs(title = "Incidence par département",
+       subtitle = "En France métropolitaine",
+       fill= "Taux d'incidence\npour 100000 hbts",
+       caption = "Source : Santé Publique France, 2021")
+
+```
+
+**Interprétation**
+
+- Entre la semaine 35 et la semaine 46 de 2021 correspondants aux trois derniers mois de données des tests virologiques par département de notre base de données, la région des Bouches-du-Rhône a enregistré le taux d'incidence le plus élevé en France. Avec 186 cas positifs pour 100 000 habitants.
+
+
+
+# <font color="chocolate">Ressources</font color> 
+
+
+1. 	Vanoutrive T, Van Malderen L, Jourquin B, Thomas I, Verhetsel A, Witlox F. Mobility management measures by employers : overview and exploratory analysis for Belgium. EUROPEAN JOURNAL OF TRANSPORT AND INFRASTRUCTURE RESEARCH. 2010;10(2):121‑41.
+
+2. 	Does Working from Home Work? Evidence from a Chinese Experiment | Stanford Graduate School of Business [Internet]. [cité 9 janv 2022]. Disponible sur: https://www.gsb.stanford.edu/faculty-research/publications/does-working-home-work-evidence-chinese-experiment
+
+3. 	Pelta * L. Le télétravail avant, pendant et après la pandémie de Covid-19 [Internet]. Attac France. [cité 9 janv 2022]. Disponible sur: https://france.attac.org/nos-publications/les-possibles/numero-27-printemps-2021/dossier-numerisation-et-transformation-des-rapports-sociaux/article/le-teletravail-avant-pendant-et-apres-la-pandemie-de-covid-19
+
+4. 	Henke RM, Benevent R, Schulte P, Rinehart C, Crighton KA, Corcoran M. The Effects of Telecommuting Intensity on Employee Health. Am J Health Promot. nov 2016;30(8):604‑12. 
