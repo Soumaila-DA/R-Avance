@@ -1,6 +1,6 @@
 ---
 title: "Université de Lille - M2 Sociologie - Parcours ENSP"
-author: "Soukaina ABI-AYAD- Soumaila DA"
+author: "Soumaila DA"
 date: "data de rendu:12/01/2022"
 output:
   word_document:
